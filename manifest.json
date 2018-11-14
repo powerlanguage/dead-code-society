@@ -1,0 +1,21 @@
+{
+  "name": "Dead code society",
+  "version": "1.0",
+  "description": "Counting lines of code in phabricator diffs",
+  "manifest_version": 2,
+  "content_scripts": [
+    {
+      "matches": ["YOUR_PHABRICATOR_URL/D*"],
+      "js": ["deadCodeSociety.js"],
+      "run_at": "document_end"
+    }
+  ],
+  "browser_action": {
+    "default_icon": "hocho-48.png"
+  },
+  "icons": { 
+    "16": "hocho-16.png",
+    "48": "hocho-48.png",
+    "128": "hocho-128.png" 
+  }
+}
