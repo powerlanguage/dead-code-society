@@ -69,7 +69,7 @@ const handleMutation = (mutationsList, observer) => {
     if(mutation.addedNodes.length) {
       for(let node of mutation.addedNodes) {
         additions = Array.from(node.querySelectorAll('td.new'))
-          .filter(line => line.className === 'new' || line.className === 'new new-full').length;
+          .filter(line => line.className === 'new' || line.className === 'new new-full' || line.className === 'right new').length;
         deletions = node.querySelectorAll('td.old').length;
         updateStats(additions, deletions);
       };
