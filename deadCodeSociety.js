@@ -49,7 +49,14 @@ const linesChanged = Array.from(document.querySelectorAll('td.differential-toc-f
 const ids = Array.from(document.querySelectorAll('td.differential-toc-file'))
   .map(item => item.querySelector('a') .getAttribute("href") .substring(8));
 
-const updateStats = (additions, deletions) => {
+// Track counted diff ids so we don't recount if view is toggled
+const countedDiffIds = []
+
+const updateStats = (id, additions, deletions) => {
+  if (countedDiffIds.includes(id)) {
+    return;
+  }
+  countedDiffIds.push(id);
   const oldDelta = parseInt(document.getElementById('delta').textContent);
   const oldAdditions = parseInt(document.getElementById('added').textContent);
   const oldDeletions = parseInt(document.getElementById('deleted').textContent);
@@ -64,14 +71,16 @@ const updateStats = (additions, deletions) => {
 };
 
 // Once diff loads
-const handleMutation = (mutationsList, observer) => {
+const handleMutation = (mutationsList, id) => {
   for(let mutation of mutationsList) {
     if(mutation.addedNodes.length) {
       for(let node of mutation.addedNodes) {
-        additions = Array.from(node.querySelectorAll('td.new'))
-          .filter(line => line.className === 'new' || line.className === 'new new-full' || line.className === 'right new').length;
-        deletions = node.querySelectorAll('td.old').length;
-        updateStats(additions, deletions);
+        if (node.className.includes('differential-diff')) {
+          additions = Array.from(node.querySelectorAll('td.new'))
+            .filter(line => line.className === 'new' || line.className === 'new new-full' || line.className === 'right new').length;
+          deletions = node.querySelectorAll('td.old').length;
+          updateStats(id, additions, deletions);
+        }
       };
     }
   };
@@ -81,13 +90,13 @@ const handleMutation = (mutationsList, observer) => {
 // Otherwise, set up observer
 ids.forEach((id, index) => {
   if (statuses[index] === 'A') {
-    updateStats(linesChanged[index], 0);
+    updateStats(id, linesChanged[index], 0);
   } else if (statuses[index] === 'D') {
-    updateStats(0, linesChanged[index]);
+    updateStats(id, 0, linesChanged[index]);
   } else {
     const change = document.querySelector(`#diff-change-${id}`);
     const config = { childList: true, subtree: true }
-    const observer = new MutationObserver(handleMutation);
+    const observer = new MutationObserver((mutationsList, observer) => { handleMutation(mutationsList, id) });
     observer.observe(change, config);
   }
 });
