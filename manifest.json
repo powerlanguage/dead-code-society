@@ -1,11 +1,11 @@
 {
-  "name": "Dead code society",
+  "name": "Dead Code Society",
   "version": "1.0",
-  "description": "Counting lines of code in phabricator diffs",
+  "description": "Display count of lines changed when viewing a phabricator diff",
   "manifest_version": 2,
   "content_scripts": [
     {
-      "matches": ["YOUR_PHABRICATOR_URL/D*"],
+      "matches": ["http://*/*", "https://*/*"],
       "js": ["deadCodeSociety.js"],
       "run_at": "document_end"
     }
