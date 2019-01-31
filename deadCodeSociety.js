@@ -37,7 +37,7 @@ if (document.querySelector('td.differential-toc-char')) {
   e.insertAdjacentHTML('beforeend', sectionBody);
 
   // Used to extract line modified counts from the ToC
-  const LINES_REGEX = /\((\d*)/;
+  const LINES_REGEX = /\((\d* line)/;
 
   // Status can be Added, Deleted, Modified, Moved
   const statuses = Array.from(
